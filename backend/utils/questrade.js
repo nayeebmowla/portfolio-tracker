@@ -1,10 +1,9 @@
 const axios = require('axios');
 
-const server_url = 'https://login.questrade.com/oauth2/token?grant_type=refresh_token&refresh_token='; // TODO encode
+const server_url = 'https://login.questrade.com/oauth2/token?grant_type=refresh_token&refresh_token=';
 
-// GET request for remote image in node.js
-const fetchPositions = async (api_token) => {
-    const { access_token, api_server, refresh_token, token_type } = await fetchAuthTokens(api_token);
+const fetchPositions = async (token) => {
+    const { access_token, api_server, refresh_token, token_type } = await fetchAccessToken(token);
     console.log('Refresh token: ' + refresh_token);
 
     const accountData = await fetchAccountData(api_server, token_type, access_token, 'accounts');
@@ -14,8 +13,8 @@ const fetchPositions = async (api_token) => {
     return positionData.positions;
 }
 
-async function fetchAuthTokens(api_token) {
-    const response = await axios.get(`${server_url}${api_token}`);
+async function fetchAccessToken(refresh_token) {
+    const response = await axios.get(`${server_url}${refresh_token}`);
     return response.data;
   }
 
