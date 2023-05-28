@@ -1,5 +1,6 @@
 const express = require('express');
 const fetchPositions = require('./utils/questrade');
+const transformData = require('./utils/transform-data');
 require('dotenv').config();
 
 const app = express();
@@ -17,7 +18,8 @@ app.get('/positions', async (req, res) => {
 
   try {
     const positions = await fetchPositions(token);
-    res.json(positions);
+    const formatted = await transformData(positions);
+    res.json(formatted);
   } catch (e) {
     console.log(e);
     res.status(400).json("Token may be expired, please try with a new token.\nError: " + e);
