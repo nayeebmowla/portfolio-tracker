@@ -5,8 +5,7 @@
   "main": "backend/app.js",
   "scripts": {
     "start": "node backend/app.js",
-    "backend": "nodemon backend/app.js",
-    "frontend": "cd frontend && npm start",
+    "backend": "cd backend && npm run dev",
     "test": "echo \"No test specified\" && exit 0"
   },
   "keywords": [],

@@ -3,8 +3,11 @@ const yahooFinance = require('yahoo-finance2').default;
 const transformData = async (positions) => {
     const transformedPositions = [];
 
+    const usdToCad = await yahooFinance.quote("CAD=X");
+    const usdToCadConversionRate = usdToCad.regularMarketPrice;
+
     for (const position of positions) {
-        const { symbol, openQuantity, currentPrice, totalCost } = position;
+        const { symbol, openQuantity, totalCost } = position;
 
         const startDate = new Date(new Date().setFullYear(new Date().getFullYear() - 1)).toISOString().split('T')[0];
         const endDate = new Date().toISOString().split('T')[0];
@@ -17,19 +20,21 @@ const transformData = async (positions) => {
         }
 
         const quote = await yahooFinance.quote(symbol);
+        const { regularMarketPrice, longName, currency } = quote;
 
         transformedPositions.push({
-            symbol,
-            name: quote.longName,
+            stock: symbol,
+            name: longName,
             shares: openQuantity,
             bookValue: totalCost,
             dividend: dividends[dividends.length - 1]?.dividends || 0,
             frequency: dividends.length,
-            currentPrice
+            currentPrice: regularMarketPrice,
+            currency
         });
     }
 
-    return transformedPositions;
+    return { transformedPositions, usdToCadConversionRate };
 };
 
 module.exports = transformData;
