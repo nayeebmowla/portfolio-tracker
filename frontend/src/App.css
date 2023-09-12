@@ -1,0 +1,23 @@
+.App {
+  display: grid;
+  place-items: center;
+  height: 100vh;
+  background-color: #e0e0e0;
+}
+
+.App-body {
+  background-color: #f0f0f0;
+  height: 98vh;
+  width: 98vw;
+  box-shadow: -1px 4px 20px -8px rgba(0, 0, 0, 0.75);
+  border-radius: 15px;
+}
+
+.App-inner {
+  padding: 20px;
+}
+
+#Title {
+  text-align: center;
+  color: #33691e;
+}
