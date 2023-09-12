@@ -1,11 +1,20 @@
-.App {
+h1 {
+  color: #33691e;
+  text-align: center;
+}
+
+h2 {
+  color: #33691e;
+}
+
+.app {
   display: grid;
   place-items: center;
   height: 100vh;
   background-color: #e0e0e0;
 }
 
-.App-body {
+.app-body {
   background-color: #f0f0f0;
   height: 98vh;
   width: 98vw;
@@ -13,11 +22,6 @@
   border-radius: 15px;
 }
 
-.App-inner {
+.app-inner {
   padding: 20px;
-}
-
-#Title {
-  text-align: center;
-  color: #33691e;
 }

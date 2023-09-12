@@ -16,11 +16,11 @@ const theme = createTheme({
 function App() {
   return (
     <ThemeProvider theme={theme}>
-      <div className="App">
-        <div className="App-body">
-          <div className="App-inner">
+      <div className="app">
+        <div className="app-body">
+          <div className="app-inner">
             <Stack spacing={2}>
-              <h1 id="Title">Portfolio Tracker</h1>
+              <h1>Portfolio Tracker</h1>
               <PortfolioSelect />
               <PortfolioTable />
             </Stack>
