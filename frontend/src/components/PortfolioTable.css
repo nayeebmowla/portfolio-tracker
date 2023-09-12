@@ -1,0 +1,32 @@
+.portfolio-table {
+    border: 1px solid #ccc;
+    border-collapse: collapse;
+    border-spacing: 0;
+    width: 100%;
+    display: table
+}
+
+.portfolio-table tr {
+    border-bottom: 1px solid #ddd
+}
+
+.portfolio-table tr:nth-child(odd) {
+    background-color: #fff
+}
+
+.portfolio-table tr:nth-child(even) {
+    background-color: #f1f1f1
+}
+
+.portfolio-table td,
+.portfolio-table th {
+    padding: 8px 8px;
+    display: table-cell;
+    text-align: left;
+    vertical-align: top
+}
+
+.portfolio-table th:first-child,
+.portfolio-table td:first-child {
+    padding-left: 16px
+}

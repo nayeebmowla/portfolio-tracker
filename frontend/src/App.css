@@ -11,11 +11,11 @@ h2 {
   display: grid;
   place-items: center;
   height: 100vh;
-  background-color: #e0e0e0;
+  background-color: #f1f1f1;
 }
 
 .app-body {
-  background-color: #f0f0f0;
+  background-color: #fff;
   height: 98vh;
   width: 98vw;
   box-shadow: -1px 4px 20px -8px rgba(0, 0, 0, 0.75);
