@@ -5,6 +5,8 @@ import { ThemeProvider, createTheme } from "@mui/material/styles";
 import { lightGreen } from "@mui/material/colors";
 import { Stack } from "@mui/material";
 
+import data from "./mock-data.json";
+
 const theme = createTheme({
   palette: {
     primary: {
@@ -22,7 +24,20 @@ function App() {
             <Stack spacing={2}>
               <h1>Portfolio Tracker</h1>
               <PortfolioSelect />
-              <PortfolioTable />
+              <h2>{`${data.account} (CAD)`}</h2>
+              <PortfolioTable
+                positions={data.positions.filter(
+                  (position) => position.currency === "CAD"
+                )}
+                conversionRate={data.usdToCadConversionRate}
+              />
+              <h2>{`${data.account} (USD)`}</h2>
+              <PortfolioTable
+                positions={data.positions.filter(
+                  (position) => position.currency === "USD"
+                )}
+                conversionRate={data.usdToCadConversionRate}
+              />
             </Stack>
           </div>
         </div>
