@@ -1,7 +1,3 @@
-const AccountTypes = {
-    Margin: 'Margin',
-    TFSA: 'TFSA',
-    RRSP: 'RRSP'
-};
+const AccountTypes = ["Margin", "TFSA", "RRSP"];
 
 module.exports = AccountTypes;

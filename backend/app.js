@@ -2,6 +2,7 @@ const express = require("express");
 const axios = require("axios");
 const fetchPositions = require("./utils/questrade");
 const transformData = require("./utils/transform-data");
+const AccountTypes = require("./models/account-types");
 require("dotenv").config();
 
 // SETUP EXPRESS
@@ -75,10 +76,12 @@ app.post("/positions", async (req, res) => {
     res.status(401).send("Please authenticate.");
   }
 
-  if (!accountType) {
+  if (!accountType || !AccountTypes.includes(accountType)) {
     return res
       .status(400)
-      .send("Account type must be provided in the request body.");
+      .send(
+        `Valid account type must be provided in the request body. Valid account types are: ${AccountTypes}`
+      );
   }
 
   try {
