@@ -1,6 +1,6 @@
 const express = require("express");
 const axios = require("axios");
-const fetchPositions = require("./utils/questrade");
+const { fetchAccounts, fetchPositions } = require("./utils/questrade");
 const transformData = require("./utils/transform-data");
 const AccountTypes = require("./models/account-types");
 require("dotenv").config();
@@ -59,6 +59,32 @@ app.post("/refresh-token", async (req, res) => {
     res.send(response.data);
   } catch (error) {
     res.status(500).send("Token refresh failed.");
+  }
+});
+
+// Route to get accounts data
+app.post("/accounts", async (req, res) => {
+  // Extract token, server, and token type from the request body
+  const {
+    access_token: accessToken,
+    api_server: apiServer,
+    token_type: tokenType,
+  } = req.body;
+
+  if (!accessToken || !apiServer || !tokenType) {
+    res.status(401).send("Please authenticate.");
+  }
+
+  try {
+    const accounts = await fetchAccounts(accessToken, apiServer, tokenType);
+    res.send(
+      accounts.map((item) => ({
+        type: item.type,
+        isPrimary: item.isPrimary,
+      }))
+    );
+  } catch (error) {
+    res.status(500).send("Getting accounts failed.");
   }
 });
 

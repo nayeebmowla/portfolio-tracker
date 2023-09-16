@@ -4,8 +4,9 @@ import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
 
-export default function PortfolioSelect() {
-  const [account, setAccount] = React.useState("");
+export default function PortfolioSelect({ accounts }) {
+  const primaryAccount = accounts.find((account) => account.isPrimary === true);
+  const [account, setAccount] = React.useState(primaryAccount.type);
 
   const handleChange = (event) => {
     setAccount(event.target.value);
@@ -21,9 +22,11 @@ export default function PortfolioSelect() {
         label="Account"
         onChange={handleChange}
       >
-        <MenuItem value={"TFSA"}>TFSA</MenuItem>
-        <MenuItem value={"Margin"}>Margin</MenuItem>
-        <MenuItem value={"RRSP"}>RRSP</MenuItem>
+        {accounts.map((account) => (
+          <MenuItem key={account.type} value={account.type}>
+            {account.type}
+          </MenuItem>
+        ))}
       </Select>
     </FormControl>
   );

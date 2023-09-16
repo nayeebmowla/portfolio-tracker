@@ -7,9 +7,11 @@ import {
 } from "@tanstack/react-table";
 
 function toMoney(value) {
-  return value >= 0
-    ? `$${value.toFixed(2)}`
-    : `-$${Math.abs(value).toFixed(2)}`;
+  return typeof value === "number"
+    ? value >= 0
+      ? `$${value.toFixed(2)}`
+      : `-$${Math.abs(value).toFixed(2)}`
+    : value;
 }
 
 function toPercent(value) {
@@ -32,10 +34,19 @@ function calculateMetrics(positions, conversionRate) {
     position.drip =
       Math.floor((position.payment / position.currentPrice) * 100) / 100;
     position.dripReq =
-      (position.currentPrice / position.dividend) * position.currentPrice;
-    position.sharesReq = Math.ceil(position.dripReq / position.currentPrice);
-    position.sharesRemaining = position.sharesReq - position.shares;
-    position.dripRemaining = position.sharesRemaining * position.currentPrice;
+      position.dividend > 0
+        ? (position.currentPrice / position.dividend) * position.currentPrice
+        : "N/A";
+    position.sharesReq =
+      position.dividend > 0
+        ? Math.ceil(position.dripReq / position.currentPrice)
+        : "N/A";
+    position.sharesRemaining =
+      position.dividend > 0 ? position.sharesReq - position.shares : "N/A";
+    position.dripRemaining =
+      position.dividend > 0
+        ? position.sharesRemaining * position.currentPrice
+        : "N/A";
     position.annualIncome =
       position.dividend * position.frequency * position.shares;
   });
@@ -120,6 +131,7 @@ export default function PortfolioTable({ positions, conversionRate }) {
       id: "drip",
       header: "Drip",
       accessorKey: "drip",
+      cell: (info) => info.getValue().toFixed(2),
     },
     {
       id: "drip-req",

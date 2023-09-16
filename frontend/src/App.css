@@ -8,17 +8,15 @@ h2 {
 }
 
 .app {
+  padding: 15px;
   display: grid;
   place-items: center;
-  height: 100vh;
   background-color: #f1f1f1;
 }
 
 .app-body {
   background-color: #fff;
-  height: 98vh;
-  width: 98vw;
-  box-shadow: -1px 4px 20px -8px rgba(0, 0, 0, 0.75);
+  box-shadow: -1px 4px 20px -8px rgba(0, 0, 0, 0.45);
   border-radius: 15px;
 }
 

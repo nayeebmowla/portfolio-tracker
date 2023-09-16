@@ -1,32 +1,38 @@
 .portfolio-table {
-    border: 1px solid #ccc;
-    border-collapse: collapse;
-    border-spacing: 0;
-    width: 100%;
-    display: table
+  border: 1px solid #ccc;
+  border-collapse: collapse;
+  border-spacing: 0;
+  width: 100%;
+  display: table;
 }
 
 .portfolio-table tr {
-    border-bottom: 1px solid #ddd
+  border-bottom: 1px solid #ddd;
 }
 
 .portfolio-table tr:nth-child(odd) {
-    background-color: #fff
+  background-color: #fff;
 }
 
 .portfolio-table tr:nth-child(even) {
-    background-color: #f1f1f1
+  background-color: #f1f1f1;
 }
 
 .portfolio-table td,
 .portfolio-table th {
-    padding: 8px 8px;
-    display: table-cell;
-    text-align: left;
-    vertical-align: top
+  padding: 8px 8px;
+  display: table-cell;
+  vertical-align: top;
+  border: 1px solid #ddd;
+  text-align: center;
 }
 
 .portfolio-table th:first-child,
 .portfolio-table td:first-child {
-    padding-left: 16px
+  padding-left: 16px;
+  width: 4%;
+}
+
+.portfolio-table td:nth-child(2) {
+  width: 17%;
 }

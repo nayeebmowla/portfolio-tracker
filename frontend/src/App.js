@@ -7,6 +7,17 @@ import { Stack } from "@mui/material";
 
 import data from "./mock-data.json";
 
+const mockAccounts = [
+  {
+    type: "TFSA",
+    isPrimary: true,
+  },
+  {
+    type: "Margin",
+    isPrimary: false,
+  },
+];
+
 const theme = createTheme({
   palette: {
     primary: {
@@ -23,7 +34,7 @@ function App() {
           <div className="app-inner">
             <Stack spacing={2}>
               <h1>Portfolio Tracker</h1>
-              <PortfolioSelect />
+              <PortfolioSelect accounts={mockAccounts} />
               <h2>{`${data.account} (CAD)`}</h2>
               <PortfolioTable
                 positions={data.positions.filter(
