@@ -4,6 +4,7 @@
   border-spacing: 0;
   width: 100%;
   display: table;
+  font-size: 14px;
 }
 
 .portfolio-table tr {
@@ -11,11 +12,11 @@
 }
 
 .portfolio-table tr:nth-child(odd) {
-  background-color: #fff;
+  background-color: #f1f1f1;
 }
 
 .portfolio-table tr:nth-child(even) {
-  background-color: #f1f1f1;
+  background-color: #fff;
 }
 
 .portfolio-table td,
@@ -30,9 +31,17 @@
 .portfolio-table th:first-child,
 .portfolio-table td:first-child {
   padding-left: 16px;
-  width: 4%;
+  min-width: 4%;
 }
 
 .portfolio-table td:nth-child(2) {
   width: 17%;
+}
+
+.portfolio-table td {
+  min-width: 3%;
+}
+
+.portfolio-table th {
+  background-color: #fff;
 }

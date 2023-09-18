@@ -27,10 +27,10 @@ function calculateMetrics(positions, conversionRate) {
     position.average = position.cadValue / position.shares;
     position.yield =
       (position.dividend * position.frequency * 100) / position.currentPrice;
-    position.withHeldDividend = isUsd
+    position.withheldDividend = isUsd
       ? position.dividend * 0.85
       : position.dividend;
-    position.payment = position.withHeldDividend * position.shares;
+    position.payment = position.withheldDividend * position.shares;
     position.drip =
       Math.floor((position.payment / position.currentPrice) * 100) / 100;
     position.dripReq =
@@ -107,7 +107,7 @@ export default function PortfolioTable({ positions, conversionRate }) {
     {
       id: "withheld",
       header: "15% Withheld Dividend",
-      accessorKey: "withHeldDividend",
+      accessorKey: "withheldDividend",
       cell: (info) => toMoney(info.getValue()),
     },
     {
@@ -129,13 +129,13 @@ export default function PortfolioTable({ positions, conversionRate }) {
     },
     {
       id: "drip",
-      header: "Drip",
+      header: "DRIP",
       accessorKey: "drip",
       cell: (info) => info.getValue().toFixed(2),
     },
     {
       id: "drip-req",
-      header: "Drip Required",
+      header: "DRIP Required",
       accessorKey: "dripReq",
       cell: (info) => toMoney(info.getValue()),
     },
