@@ -1,14 +1,11 @@
 import "./App.css";
 import * as React from "react";
-import PortfolioSelect from "./components/PortfolioSelect";
-import PortfolioTable from "./components/PortfolioTable";
-import { ThemeProvider, createTheme } from "@mui/material/styles";
-import { lightGreen } from "@mui/material/colors";
-import { Stack } from "@mui/material";
+import NavBar from "./components/NavBar";
+import Dividends from "./components/Dividends";
 
 import data from "./mock-data.json";
-import RefreshButton from "./components/RefreshButton";
-import NavBar from "./components/NavBar";
+import { Route, Routes } from "react-router-dom";
+import Summary from "./components/Summary";
 
 const mockAccounts = [
   {
@@ -21,72 +18,40 @@ const mockAccounts = [
   },
 ];
 
-const theme = createTheme({
-  palette: {
-    primary: {
-      main: lightGreen[900],
-    },
-    secondary: {
-      main: "#ffffff",
-    },
-  },
-});
-
 function App() {
   const primaryAccount = mockAccounts.find(
     (account) => account.isPrimary === true
   );
   const [account, setAccount] = React.useState(primaryAccount.type);
 
-  const cadPositions = data.positions.filter(
-    (position) => position.currency === "CAD"
-  );
-  const usdPositions = data.positions.filter(
-    (position) => position.currency === "USD"
-  );
-
   return (
-    <ThemeProvider theme={theme}>
-      <NavBar />
+    <>
+      <nav>
+        <NavBar />
+      </nav>
       <div className="app">
         <div className="app-body">
           <div className="app-inner">
-            <Stack spacing={2}>
-              <Stack alignItems="center" direction="row" spacing={2}>
-                <RefreshButton />
-                <PortfolioSelect
-                  accounts={mockAccounts}
-                  account={account}
-                  onChange={(event) => {
-                    setAccount(event.target.value);
-                  }}
-                />
-              </Stack>
-              <br />
-              {cadPositions.length !== 0 && (
-                <>
-                  <h2>{`${account} (CAD)`}</h2>
-                  <PortfolioTable
-                    positions={cadPositions}
-                    conversionRate={data.usdToCadConversionRate}
+            <Routes>
+              <Route
+                path="/dividends"
+                element={
+                  <Dividends
+                    account={account}
+                    accounts={mockAccounts}
+                    onAccountSelect={(event) => {
+                      setAccount(event.target.value);
+                    }}
+                    data={data}
                   />
-                </>
-              )}
-              <br />
-              {usdPositions.length !== 0 && (
-                <>
-                  <h2>{`${account} (USD)`}</h2>
-                  <PortfolioTable
-                    positions={usdPositions}
-                    conversionRate={data.usdToCadConversionRate}
-                  />
-                </>
-              )}
-            </Stack>
+                }
+              />
+              <Route path="/summary" element={<Summary />} />
+            </Routes>
           </div>
         </div>
       </div>
-    </ThemeProvider>
+    </>
   );
 }
 
