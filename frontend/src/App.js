@@ -1,5 +1,5 @@
 import "./App.css";
-import React from "react";
+import * as React from "react";
 import PortfolioSelect from "./components/PortfolioSelect";
 import PortfolioTable from "./components/PortfolioTable";
 import { ThemeProvider, createTheme } from "@mui/material/styles";

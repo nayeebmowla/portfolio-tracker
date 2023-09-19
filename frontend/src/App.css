@@ -1,23 +1,16 @@
-h1 {
-  color: #33691e;
-  text-align: center;
-}
-
 h2 {
   color: #33691e;
 }
 
 .app {
-  padding: 15px;
-  display: grid;
+  padding: 12px;
   place-items: center;
   background-color: #f1f1f1;
 }
 
 .app-body {
-  width: 100%;
   background-color: #fff;
-  box-shadow: -1px 4px 20px -8px rgba(0, 0, 0, 0.45);
+  box-shadow: -1px 4px 20px -8px rgba(0, 0, 0, 0.65);
   border-radius: 15px;
 }
 

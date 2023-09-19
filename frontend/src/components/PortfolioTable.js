@@ -4,14 +4,18 @@ import {
   useReactTable,
   flexRender,
   getCoreRowModel,
+  getSortedRowModel,
 } from "@tanstack/react-table";
+import ArrowUpwardIcon from "@mui/icons-material/ArrowUpward";
+import ArrowDownwardIcon from "@mui/icons-material/ArrowDownward";
 
 function toMoney(value) {
-  return typeof value === "number"
-    ? value >= 0
-      ? `$${value.toFixed(2)}`
-      : `-$${Math.abs(value).toFixed(2)}`
-    : value;
+  const formatter = new Intl.NumberFormat("en-US", {
+    style: "currency",
+    currency: "USD",
+  });
+
+  return typeof value === "number" ? formatter.format(value) : value;
 }
 
 function toPercent(value) {
@@ -51,122 +55,132 @@ function calculateMetrics(positions, conversionRate) {
       position.dividend * position.frequency * position.shares;
   });
 
-  return positions;
+  return positions.sort((a, b) => a.stock.localeCompare(b.stock));
 }
 
 export default function PortfolioTable({ positions, conversionRate }) {
+  const [sorting, setSorting] = React.useState([]);
+
   positions = calculateMetrics(positions, conversionRate);
 
   /** @type import('@tanstack/react-table').ColumnDef<any>*/
-  const columns = [
-    {
-      id: "ticker",
-      header: "Stock",
-      accessorKey: "stock",
-    },
-    {
-      id: "name",
-      header: "Name",
-      accessorKey: "name",
-    },
-    {
-      id: "shares",
-      header: "# of Shares",
-      accessorKey: "shares",
-    },
-    {
-      id: "book-value",
-      header: "Book Value",
-      accessorKey: "bookValue",
-      cell: (info) => toMoney(info.getValue()),
-    },
-    {
-      id: "cad-value",
-      header: "CAD Value",
-      accessorKey: "cadValue",
-      cell: (info) => toMoney(info.getValue()),
-    },
-    {
-      id: "avg-price",
-      header: "Average Price",
-      accessorKey: "average",
-      cell: (info) => toMoney(info.getValue()),
-    },
-    {
-      id: "yield",
-      header: "Yield",
-      accessorKey: "yield",
-      cell: (info) => toPercent(info.getValue()),
-    },
-    {
-      id: "dividend",
-      header: "Dividend",
-      accessorKey: "dividend",
-      cell: (info) => toMoney(info.getValue()),
-    },
-    {
-      id: "withheld",
-      header: "15% Withheld Dividend",
-      accessorKey: "withheldDividend",
-      cell: (info) => toMoney(info.getValue()),
-    },
-    {
-      id: "frequency",
-      header: "Frequency",
-      accessorKey: "frequency",
-    },
-    {
-      id: "payment",
-      header: "Payment",
-      accessorKey: "payment",
-      cell: (info) => toMoney(info.getValue()),
-    },
-    {
-      id: "current-price",
-      header: "Current Price",
-      accessorKey: "currentPrice",
-      cell: (info) => toMoney(info.getValue()),
-    },
-    {
-      id: "drip",
-      header: "DRIP",
-      accessorKey: "drip",
-      cell: (info) => info.getValue().toFixed(2),
-    },
-    {
-      id: "drip-req",
-      header: "DRIP Required",
-      accessorKey: "dripReq",
-      cell: (info) => toMoney(info.getValue()),
-    },
-    {
-      id: "drip-remaining",
-      header: "DRIP Remaining",
-      accessorKey: "dripRemaining",
-      cell: (info) => toMoney(info.getValue()),
-    },
-    {
-      id: "shares-req",
-      header: "Shares Required",
-      accessorKey: "sharesReq",
-    },
-    {
-      id: "shares-remaining",
-      header: "Shares Remaining",
-      accessorKey: "sharesRemaining",
-    },
-    {
-      id: "annual-income",
-      header: "Annual Income",
-      accessorKey: "annualIncome",
-      cell: (info) => toMoney(info.getValue()),
-    },
-  ];
+  const columns = React.useMemo(
+    () => [
+      {
+        id: "ticker",
+        header: "Stock",
+        accessorKey: "stock",
+      },
+      {
+        id: "name",
+        header: "Name",
+        accessorKey: "name",
+      },
+      {
+        id: "shares",
+        header: "# of Shares",
+        accessorKey: "shares",
+      },
+      {
+        id: "book-value",
+        header: "Book Value",
+        accessorKey: "bookValue",
+        cell: (info) => toMoney(info.getValue()),
+      },
+      {
+        id: "cad-value",
+        header: "CAD Value",
+        accessorKey: "cadValue",
+        cell: (info) => toMoney(info.getValue()),
+      },
+      {
+        id: "avg-price",
+        header: "Average Price",
+        accessorKey: "average",
+        cell: (info) => toMoney(info.getValue()),
+      },
+      {
+        id: "yield",
+        header: "Yield",
+        accessorKey: "yield",
+        cell: (info) => toPercent(info.getValue()),
+      },
+      {
+        id: "dividend",
+        header: "Dividend",
+        accessorKey: "dividend",
+        cell: (info) => toMoney(info.getValue()),
+      },
+      {
+        id: "withheld",
+        header: "15% Withheld Dividend",
+        accessorKey: "withheldDividend",
+        cell: (info) => toMoney(info.getValue()),
+      },
+      {
+        id: "frequency",
+        header: "Frequency",
+        accessorKey: "frequency",
+      },
+      {
+        id: "payment",
+        header: "Payment",
+        accessorKey: "payment",
+        cell: (info) => toMoney(info.getValue()),
+      },
+      {
+        id: "current-price",
+        header: "Current Price",
+        accessorKey: "currentPrice",
+        cell: (info) => toMoney(info.getValue()),
+      },
+      {
+        id: "drip",
+        header: "DRIP",
+        accessorKey: "drip",
+        cell: (info) => info.getValue().toFixed(2),
+      },
+      {
+        id: "drip-req",
+        header: "DRIP Required",
+        accessorKey: "dripReq",
+        cell: (info) => toMoney(info.getValue()),
+      },
+      {
+        id: "drip-remaining",
+        header: "DRIP Remaining",
+        accessorKey: "dripRemaining",
+        cell: (info) => toMoney(info.getValue()),
+      },
+      {
+        id: "shares-req",
+        header: "Shares Required",
+        accessorKey: "sharesReq",
+      },
+      {
+        id: "shares-remaining",
+        header: "Shares Remaining",
+        accessorKey: "sharesRemaining",
+      },
+      {
+        id: "annual-income",
+        header: "Annual Income",
+        accessorKey: "annualIncome",
+        cell: (info) => toMoney(info.getValue()),
+      },
+    ],
+    []
+  );
 
   const table = useReactTable({
     data: positions,
     columns,
+    state: {
+      sorting,
+    },
+    onSortingChange: setSorting,
     getCoreRowModel: getCoreRowModel(),
+    getSortedRowModel: getSortedRowModel(),
   });
 
   return (
@@ -176,11 +190,37 @@ export default function PortfolioTable({ positions, conversionRate }) {
           {table.getHeaderGroups().map((headerGroup) => (
             <tr key={headerGroup.id}>
               {headerGroup.headers.map((header) => (
-                <th key={header.id}>
-                  {flexRender(
-                    header.column.columnDef.header,
-                    header.getContext()
-                  )}
+                <th
+                  key={header.id}
+                  colSpan={header.colSpan}
+                  onClick={header.column.getToggleSortingHandler()}
+                >
+                  <div
+                    {...{
+                      className: header.column.getCanSort()
+                        ? "cursor-pointer select-none"
+                        : "",
+                    }}
+                  >
+                    {flexRender(
+                      header.column.columnDef.header,
+                      header.getContext()
+                    )}
+                    {{
+                      asc: (
+                        <ArrowUpwardIcon
+                          color="disabled"
+                          sx={{ fontSize: 16 }}
+                        />
+                      ),
+                      desc: (
+                        <ArrowDownwardIcon
+                          color="disabled"
+                          sx={{ fontSize: 16 }}
+                        />
+                      ),
+                    }[header.column.getIsSorted()] ?? null}
+                  </div>
                 </th>
               ))}
             </tr>

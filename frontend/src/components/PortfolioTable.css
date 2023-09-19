@@ -21,16 +21,14 @@
 
 .portfolio-table td,
 .portfolio-table th {
-  padding: 8px 8px;
+  padding: 9px 9px;
   display: table-cell;
-  vertical-align: top;
   border: 1px solid #ddd;
   text-align: center;
 }
 
 .portfolio-table th:first-child,
 .portfolio-table td:first-child {
-  padding-left: 16px;
   min-width: 4%;
 }
 
@@ -38,10 +36,14 @@
   width: 17%;
 }
 
-.portfolio-table td {
-  min-width: 3%;
-}
-
 .portfolio-table th {
   background-color: #fff;
+}
+
+.cursor-pointer.select-none {
+  justify-content: center;
+  display: flex;
+  flex-wrap: nowrap;
+  cursor: pointer;
+  align-items: center;
 }
