@@ -46,7 +46,18 @@ function App() {
                   />
                 }
               />
-              <Route path="/summary" element={<Summary />} />
+              <Route
+                path="/summary"
+                element={
+                  <Summary
+                    account={account}
+                    accounts={mockAccounts}
+                    onAccountSelect={(event) => {
+                      setAccount(event.target.value);
+                    }}
+                  />
+                }
+              />
             </Routes>
           </div>
         </div>

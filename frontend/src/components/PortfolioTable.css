@@ -1,5 +1,5 @@
 .portfolio-table {
-  border: 1px solid #ccc;
+  border: 1px solid #ddd;
   border-collapse: collapse;
   border-spacing: 0;
   width: 100%;
@@ -37,6 +37,7 @@
 }
 
 .portfolio-table th {
+  color: #32302f;
   background-color: #fff;
 }
 

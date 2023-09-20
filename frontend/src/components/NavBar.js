@@ -5,22 +5,21 @@ import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
 import { Divider, IconButton, Menu, MenuItem, Stack } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
+import { useTheme } from "@mui/material/styles";
 
 function NavBar() {
-  const [page, setPage] = React.useState("dividends");
+  const theme = useTheme();
+  const path = useLocation().pathname.split("/");
+  const page = path.at(-1);
+
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
-  const handleMenuClick = (event) => {
+  const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
   };
   const handleClose = () => {
     setAnchorEl(null);
-  };
-  const handleMenuItemClick = (event) => {
-    const { currentPage } = event.currentTarget.dataset;
-    setPage(currentPage);
-    handleClose();
   };
 
   return (
@@ -45,7 +44,7 @@ function NavBar() {
             aria-controls={open ? "menu" : undefined}
             aria-haspopup="true"
             aria-expanded={open ? "true" : undefined}
-            onClick={handleMenuClick}
+            onClick={handleClick}
           >
             <MenuIcon />
           </IconButton>
@@ -62,7 +61,7 @@ function NavBar() {
               component={Link}
               data-current-page="dividends"
               to={"/dashboard/dividends"}
-              onClick={handleMenuItemClick}
+              onClick={handleClose}
             >
               Dividends
             </MenuItem>
@@ -70,13 +69,18 @@ function NavBar() {
               component={Link}
               data-current-page="summary"
               to={"/dashboard/summary"}
-              onClick={handleMenuItemClick}
+              onClick={handleClose}
             >
               Summary
             </MenuItem>
           </Menu>
           <Divider orientation="vertical" flexItem />
-          <Typography fontWeight="bold" variant="h7" textTransform="uppercase">
+          <Typography
+            color={theme.text.headers}
+            fontWeight="bold"
+            variant="h7"
+            textTransform="uppercase"
+          >
             {page}
           </Typography>
         </Stack>

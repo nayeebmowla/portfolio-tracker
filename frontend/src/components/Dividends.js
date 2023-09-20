@@ -3,8 +3,11 @@ import PortfolioSelect from "./PortfolioSelect";
 import PortfolioTable from "./PortfolioTable";
 import { Stack, Typography } from "@mui/material";
 import RefreshButton from "./RefreshButton";
+import { useTheme } from "@mui/material/styles";
 
 function Dividends({ account, onAccountSelect, accounts, data }) {
+  const theme = useTheme();
+
   const cadPositions = data.positions.filter(
     (position) => position.currency === "CAD"
   );
@@ -26,7 +29,11 @@ function Dividends({ account, onAccountSelect, accounts, data }) {
         <br />
         {cadPositions.length !== 0 && (
           <>
-            <Typography color="primary" variant="h5" fontWeight="bold">
+            <Typography
+              color={theme.text.headers}
+              variant="h5"
+              fontWeight="bold"
+            >
               {`${account} (CAD)`}
             </Typography>
             <PortfolioTable
@@ -38,7 +45,11 @@ function Dividends({ account, onAccountSelect, accounts, data }) {
         <br />
         {usdPositions.length !== 0 && (
           <>
-            <Typography color="primary" variant="h5" fontWeight="bold">
+            <Typography
+              color={theme.text.headers}
+              variant="h5"
+              fontWeight="bold"
+            >
               {`${account} (USD)`}
             </Typography>
             <PortfolioTable

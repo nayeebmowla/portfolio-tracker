@@ -6,16 +6,18 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 import Login from "./components/Login";
 import NotFound from "./components/NotFound";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
-import { lightGreen } from "@mui/material/colors";
 
 const theme = createTheme({
   palette: {
     primary: {
-      main: lightGreen[900],
+      main: "#4A9195",
     },
     secondary: {
-      main: "#ffffff",
+      main: "#FFFFFF",
     },
+  },
+  text: {
+    headers: "#394352",
   },
 });
 
