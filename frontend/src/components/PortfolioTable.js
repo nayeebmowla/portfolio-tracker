@@ -8,6 +8,7 @@ import {
 } from "@tanstack/react-table";
 import ArrowUpwardIcon from "@mui/icons-material/ArrowUpward";
 import ArrowDownwardIcon from "@mui/icons-material/ArrowDownward";
+import { useTheme } from "@mui/material/styles";
 
 function toMoney(value) {
   const formatter = new Intl.NumberFormat("en-US", {
@@ -59,6 +60,7 @@ function calculateMetrics(positions, conversionRate) {
 }
 
 export default function PortfolioTable({ positions, conversionRate }) {
+  const theme = useTheme();
   const [sorting, setSorting] = React.useState([]);
 
   positions = calculateMetrics(positions, conversionRate);
@@ -230,7 +232,14 @@ export default function PortfolioTable({ positions, conversionRate }) {
           {table.getRowModel().rows.map((row) => (
             <tr key={row.id}>
               {row.getVisibleCells().map((cell) => (
-                <td key={cell.id}>
+                <td
+                  key={cell.id}
+                  style={
+                    typeof getRowStyles === "function"
+                      ? getRowStyles(cell, theme)
+                      : {}
+                  }
+                >
                   {flexRender(cell.column.columnDef.cell, cell.getContext())}
                 </td>
               ))}
@@ -241,3 +250,18 @@ export default function PortfolioTable({ positions, conversionRate }) {
     </>
   );
 }
+
+const getRowStyles = (cell, theme) => {
+  if (cell.column.id === "drip") {
+    if (cell.getValue() >= 1) {
+      return {
+        background: theme.highlights.green,
+      };
+    }
+    if (cell.getValue() >= 0.5) {
+      return {
+        background: theme.highlights.yellow,
+      };
+    }
+  }
+};

@@ -7,22 +7,11 @@ import data from "./mock-data.json";
 import { Route, Routes } from "react-router-dom";
 import Summary from "./components/Summary";
 
-const mockAccounts = [
-  {
-    type: "TFSA",
-    isPrimary: true,
-  },
-  {
-    type: "Margin",
-    isPrimary: false,
-  },
-];
-
 function App() {
-  const primaryAccount = mockAccounts.find(
-    (account) => account.isPrimary === true
-  );
+  const accounts = data.map((item) => item.account);
+  const primaryAccount = accounts.find((account) => account.isPrimary === true);
   const [account, setAccount] = React.useState(primaryAccount.type);
+  const positions = data.find((item) => item.account.type === account);
 
   return (
     <>
@@ -38,11 +27,11 @@ function App() {
                 element={
                   <Dividends
                     account={account}
-                    accounts={mockAccounts}
+                    accounts={accounts}
                     onAccountSelect={(event) => {
                       setAccount(event.target.value);
                     }}
-                    data={data}
+                    data={positions}
                   />
                 }
               />
@@ -51,7 +40,7 @@ function App() {
                 element={
                   <Summary
                     account={account}
-                    accounts={mockAccounts}
+                    accounts={accounts}
                     onAccountSelect={(event) => {
                       setAccount(event.target.value);
                     }}

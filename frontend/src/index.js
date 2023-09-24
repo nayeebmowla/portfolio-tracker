@@ -19,6 +19,11 @@ const theme = createTheme({
   text: {
     headers: "#394352",
   },
+  highlights: {
+    green: "#34A853",
+    yellow: "#FBBC04",
+    red: "#EA4335",
+  },
 });
 
 const root = ReactDOM.createRoot(document.getElementById("root"));

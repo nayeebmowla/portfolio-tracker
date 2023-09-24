@@ -33,7 +33,7 @@
 }
 
 .portfolio-table td:nth-child(2) {
-  width: 17%;
+  min-width: 18%;
 }
 
 .portfolio-table th {

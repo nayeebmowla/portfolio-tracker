@@ -33,8 +33,11 @@ async function fetchPositions(accessToken, apiServer, tokenType) {
     const formatted = await transformData(positionData.positions);
 
     accountsWithPositions.push({
-      account: account.type,
-      positions: formatted,
+      account: {
+        type: account.type,
+        isPrimary: account.isPrimary,
+      },
+      ...formatted,
     });
   }
 
