@@ -1,8 +1,6 @@
 const express = require("express");
 const axios = require("axios");
-const { fetchAccounts, fetchPositions } = require("./utils/questrade");
-const transformData = require("./utils/transform-data");
-const AccountTypes = require("./models/account-types");
+const { fetchPositions } = require("./utils/questrade");
 require("dotenv").config();
 
 // SETUP EXPRESS
@@ -16,19 +14,19 @@ const options = {
 
 const app = express();
 const port = process.env.PORT || 3005;
-const redirect_uri = `https://www.nayeeb-portfolio-tracker.com:${port}/auth/callback/`;
+const redirect_uri = `https://www.nayeeb-portfolio-tracker.com:${port}/api/auth/callback/`;
 
 app.use(express.json());
 
 // ROUTES
 // Redirect route to Questrade authorization URL
-app.get("/auth", (req, res) => {
+app.get("/api/auth", (req, res) => {
   const authorizationUrl = `https://login.questrade.com/oauth2/authorize?client_id=${process.env.CLIENT_ID}&response_type=code&redirect_uri=${redirect_uri}`;
   res.redirect(authorizationUrl);
 });
 
 // Callback route to handle Questrade authorization response
-app.get("/auth/callback", async (req, res) => {
+app.get("/api/auth/callback", async (req, res) => {
   // Extract authorization code from the query parameter
   const authorizationCode = req.query.code;
   if (!authorizationCode) {
@@ -46,7 +44,7 @@ app.get("/auth/callback", async (req, res) => {
 });
 
 // Route to refresh token
-app.post("/refresh-token", async (req, res) => {
+app.post("/api/refresh-token", async (req, res) => {
   const { refresh_token: refreshToken } = req.body;
 
   try {
@@ -62,37 +60,10 @@ app.post("/refresh-token", async (req, res) => {
   }
 });
 
-// Route to get accounts data
-app.post("/accounts", async (req, res) => {
-  // Extract token, server, and token type from the request body
-  const {
-    access_token: accessToken,
-    api_server: apiServer,
-    token_type: tokenType,
-  } = req.body;
-
-  if (!accessToken || !apiServer || !tokenType) {
-    res.status(401).send("Please authenticate.");
-  }
-
-  try {
-    const accounts = await fetchAccounts(accessToken, apiServer, tokenType);
-    res.send(
-      accounts.map((item) => ({
-        type: item.type,
-        isPrimary: item.isPrimary,
-      }))
-    );
-  } catch (error) {
-    res.status(500).send("Getting accounts failed.");
-  }
-});
-
 // Route to get positions data
-app.post("/positions", async (req, res) => {
+app.post("/api/positions", async (req, res) => {
   // Extract account type, token, server, and token type from the request body
   const {
-    account_type: accountType,
     access_token: accessToken,
     api_server: apiServer,
     token_type: tokenType,
@@ -102,23 +73,9 @@ app.post("/positions", async (req, res) => {
     res.status(401).send("Please authenticate.");
   }
 
-  if (!accountType || !AccountTypes.includes(accountType)) {
-    return res
-      .status(400)
-      .send(
-        `Valid account type must be provided in the request body. Valid account types are: ${AccountTypes}`
-      );
-  }
-
   try {
-    const positions = await fetchPositions(
-      accessToken,
-      apiServer,
-      tokenType,
-      accountType
-    );
-    const formatted = await transformData(positions);
-    res.send(formatted);
+    const positions = await fetchPositions(accessToken, apiServer, tokenType);
+    res.send(positions);
   } catch (error) {
     res.status(500).send("Getting positions failed.");
   }

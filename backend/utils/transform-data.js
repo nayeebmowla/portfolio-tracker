@@ -1,6 +1,6 @@
 const yahooFinance = require("yahoo-finance2").default;
 
-const transformData = async (positions) => {
+async function transformData(positions) {
   const transformedPositions = [];
 
   const usdToCad = await yahooFinance.quote("CAD=X");
@@ -43,6 +43,6 @@ const transformData = async (positions) => {
   }
 
   return { positions: transformedPositions, usdToCadConversionRate };
-};
+}
 
 module.exports = transformData;

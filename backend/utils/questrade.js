@@ -1,4 +1,5 @@
 const axios = require("axios");
+const transformData = require("./transform-data");
 
 async function fetchAccounts(accessToken, apiServer, tokenType) {
   const accountData = await fetchData(
@@ -18,18 +19,26 @@ async function fetchAccounts(accessToken, apiServer, tokenType) {
   });
 }
 
-async function fetchPositions(accessToken, apiServer, tokenType, accountType) {
+async function fetchPositions(accessToken, apiServer, tokenType) {
   const accounts = await fetchAccounts(accessToken, apiServer, tokenType);
-  const account_id = accounts.find(
-    (account) => account.type === accountType
-  ).number;
-  const positionData = await fetchData(
-    accessToken,
-    apiServer,
-    tokenType,
-    `accounts/${account_id}/positions`
-  );
-  return positionData.positions;
+  const accountsWithPositions = [];
+  for (const account of accounts) {
+    const positionData = await fetchData(
+      accessToken,
+      apiServer,
+      tokenType,
+      `accounts/${account.number}/positions`
+    );
+
+    const formatted = await transformData(positionData.positions);
+
+    accountsWithPositions.push({
+      account: account.type,
+      positions: formatted,
+    });
+  }
+
+  return accountsWithPositions;
 }
 
 async function fetchData(accessToken, apiServer, tokenType, endpoint) {
