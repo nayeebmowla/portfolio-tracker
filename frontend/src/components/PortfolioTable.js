@@ -9,21 +9,28 @@ import {
 import ArrowUpwardIcon from "@mui/icons-material/ArrowUpward";
 import ArrowDownwardIcon from "@mui/icons-material/ArrowDownward";
 import { useTheme } from "@mui/material/styles";
+import TableSummary from "./TableSummary";
+import { toMoney, toPercent } from "../utils/format";
+import { Stack } from "@mui/material";
 
-function toMoney(value) {
-  const formatter = new Intl.NumberFormat("en-US", {
-    style: "currency",
-    currency: "USD",
+function calculateSummary(positions) {
+  let totalBookValue = 0;
+  let totalDividends = 0;
+  positions.forEach((position) => {
+    totalBookValue += position.bookValue;
+    totalDividends += position.annualIncome;
   });
 
-  return typeof value === "number" ? formatter.format(value) : value;
+  return [
+    {
+      dividends: totalDividends,
+      yield: (totalDividends * 100) / totalBookValue,
+      bookValue: totalBookValue,
+    },
+  ];
 }
 
-function toPercent(value) {
-  return `${value.toFixed(2)}%`;
-}
-
-function calculateMetrics(positions, conversionRate) {
+function calculateMetrics(account, positions, conversionRate) {
   positions.forEach((position) => {
     const isUsd = position.currency === "USD";
     position.cadValue = isUsd
@@ -32,26 +39,27 @@ function calculateMetrics(positions, conversionRate) {
     position.average = position.cadValue / position.shares;
     position.yield =
       (position.dividend * position.frequency * 100) / position.currentPrice;
-    position.withheldDividend = isUsd
-      ? position.dividend * 0.85
-      : position.dividend;
+    position.withheldDividend =
+      isUsd && account !== "RRSP"
+        ? position.dividend * 0.85
+        : position.dividend;
     position.payment = position.withheldDividend * position.shares;
     position.drip =
       Math.floor((position.payment / position.currentPrice) * 100) / 100;
     position.dripReq =
       position.dividend > 0
         ? (position.currentPrice / position.dividend) * position.currentPrice
-        : "N/A";
+        : 0;
     position.sharesReq =
       position.dividend > 0
         ? Math.ceil(position.dripReq / position.currentPrice)
-        : "N/A";
+        : 0;
     position.sharesRemaining =
-      position.dividend > 0 ? position.sharesReq - position.shares : "N/A";
+      position.dividend > 0 ? position.sharesReq - position.shares : 0;
     position.dripRemaining =
       position.dividend > 0
         ? position.sharesRemaining * position.currentPrice
-        : "N/A";
+        : 0;
     position.annualIncome =
       position.dividend * position.frequency * position.shares;
   });
@@ -59,11 +67,40 @@ function calculateMetrics(positions, conversionRate) {
   return positions.sort((a, b) => a.stock.localeCompare(b.stock));
 }
 
-export default function PortfolioTable({ positions, conversionRate }) {
+function getRowStyles(cell, theme) {
+  if (cell.column.id === "drip") {
+    if (cell.getValue() >= 1) {
+      return {
+        background: theme.highlights.green,
+      };
+    }
+    if (cell.getValue() >= 0.5) {
+      return {
+        background: theme.highlights.yellow,
+      };
+    }
+  }
+  if (
+    cell.column.id === "dividend" ||
+    cell.column.id === "yield" ||
+    cell.column.id === "withheld" ||
+    cell.column.id === "frequency" ||
+    cell.column.id === "payment"
+  ) {
+    if (cell.getValue() <= 0) {
+      return {
+        color: theme.highlights.red,
+      };
+    }
+  }
+}
+
+export default function PortfolioTable({ account, positions, conversionRate }) {
   const theme = useTheme();
   const [sorting, setSorting] = React.useState([]);
 
-  positions = calculateMetrics(positions, conversionRate);
+  positions = calculateMetrics(account, positions, conversionRate);
+  const summary = calculateSummary(positions);
 
   /** @type import('@tanstack/react-table').ColumnDef<any>*/
   const columns = React.useMemo(
@@ -187,81 +224,69 @@ export default function PortfolioTable({ positions, conversionRate }) {
 
   return (
     <>
-      <table className="portfolio-table">
-        <thead>
-          {table.getHeaderGroups().map((headerGroup) => (
-            <tr key={headerGroup.id}>
-              {headerGroup.headers.map((header) => (
-                <th
-                  key={header.id}
-                  colSpan={header.colSpan}
-                  onClick={header.column.getToggleSortingHandler()}
-                >
-                  <div
-                    {...{
-                      className: header.column.getCanSort()
-                        ? "cursor-pointer select-none"
-                        : "",
-                    }}
+      <Stack spacing={2} alignItems="center">
+        <TableSummary data={summary} />
+        <table className="portfolio-table">
+          <thead>
+            {table.getHeaderGroups().map((headerGroup) => (
+              <tr key={headerGroup.id}>
+                {headerGroup.headers.map((header) => (
+                  <th
+                    key={header.id}
+                    colSpan={header.colSpan}
+                    onClick={header.column.getToggleSortingHandler()}
                   >
-                    {flexRender(
-                      header.column.columnDef.header,
-                      header.getContext()
-                    )}
-                    {{
-                      asc: (
-                        <ArrowUpwardIcon
-                          color="disabled"
-                          sx={{ fontSize: 16 }}
-                        />
-                      ),
-                      desc: (
-                        <ArrowDownwardIcon
-                          color="disabled"
-                          sx={{ fontSize: 16 }}
-                        />
-                      ),
-                    }[header.column.getIsSorted()] ?? null}
-                  </div>
-                </th>
-              ))}
-            </tr>
-          ))}
-        </thead>
-        <tbody>
-          {table.getRowModel().rows.map((row) => (
-            <tr key={row.id}>
-              {row.getVisibleCells().map((cell) => (
-                <td
-                  key={cell.id}
-                  style={
-                    typeof getRowStyles === "function"
-                      ? getRowStyles(cell, theme)
-                      : {}
-                  }
-                >
-                  {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                </td>
-              ))}
-            </tr>
-          ))}
-        </tbody>
-      </table>
+                    <div
+                      {...{
+                        className: header.column.getCanSort()
+                          ? "cursor-pointer select-none"
+                          : "",
+                      }}
+                    >
+                      {flexRender(
+                        header.column.columnDef.header,
+                        header.getContext()
+                      )}
+                      {{
+                        asc: (
+                          <ArrowUpwardIcon
+                            color="disabled"
+                            sx={{ fontSize: 16 }}
+                          />
+                        ),
+                        desc: (
+                          <ArrowDownwardIcon
+                            color="disabled"
+                            sx={{ fontSize: 16 }}
+                          />
+                        ),
+                      }[header.column.getIsSorted()] ?? null}
+                    </div>
+                  </th>
+                ))}
+              </tr>
+            ))}
+          </thead>
+          <tbody>
+            {table.getRowModel().rows.map((row) => (
+              <tr key={row.id}>
+                {row.getVisibleCells().map((cell) => (
+                  <td
+                    key={cell.id}
+                    style={
+                      typeof getRowStyles === "function"
+                        ? getRowStyles(cell, theme)
+                        : {}
+                    }
+                  >
+                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                  </td>
+                ))}
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </Stack>
     </>
   );
 }
-
-const getRowStyles = (cell, theme) => {
-  if (cell.column.id === "drip") {
-    if (cell.getValue() >= 1) {
-      return {
-        background: theme.highlights.green,
-      };
-    }
-    if (cell.getValue() >= 0.5) {
-      return {
-        background: theme.highlights.yellow,
-      };
-    }
-  }
-};

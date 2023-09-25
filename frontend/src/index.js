@@ -27,6 +27,7 @@ const theme = createTheme({
 });
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
+// TODO: fix /dashboard/* nested route
 root.render(
   <React.StrictMode>
     <ThemeProvider theme={theme}>

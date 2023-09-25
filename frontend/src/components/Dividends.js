@@ -4,6 +4,7 @@ import PortfolioTable from "./PortfolioTable";
 import { Stack, Typography } from "@mui/material";
 import RefreshButton from "./RefreshButton";
 import { useTheme } from "@mui/material/styles";
+import TableSummary from "./TableSummary";
 
 function Dividends({ account, onAccountSelect, accounts, data }) {
   const theme = useTheme();
@@ -27,6 +28,11 @@ function Dividends({ account, onAccountSelect, accounts, data }) {
           />
         </Stack>
         <br />
+        <Typography color={theme.text.headers} variant="h5" fontWeight="bold">
+          {`Total (CAD)`}
+        </Typography>
+        <TableSummary data={[]} />
+        <br />
         {cadPositions.length !== 0 && (
           <>
             <Typography
@@ -37,6 +43,7 @@ function Dividends({ account, onAccountSelect, accounts, data }) {
               {`${account} (CAD)`}
             </Typography>
             <PortfolioTable
+              account={account}
               positions={cadPositions}
               conversionRate={data.usdToCadConversionRate}
             />
@@ -53,6 +60,7 @@ function Dividends({ account, onAccountSelect, accounts, data }) {
               {`${account} (USD)`}
             </Typography>
             <PortfolioTable
+              account={account}
               positions={usdPositions}
               conversionRate={data.usdToCadConversionRate}
             />

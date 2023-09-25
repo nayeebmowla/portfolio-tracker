@@ -1,4 +1,5 @@
-.portfolio-table {
+.portfolio-table,
+.table-summary {
   border: 1px solid #ddd;
   border-collapse: collapse;
   border-spacing: 0;
@@ -7,21 +8,26 @@
   font-size: 14px;
 }
 
-.portfolio-table tr {
+.portfolio-table tr,
+.table-summary tr {
   border-bottom: 1px solid #ddd;
 }
 
-.portfolio-table tr:nth-child(odd) {
+.portfolio-table tr:nth-child(odd),
+.table-summary tr:nth-child(odd) {
   background-color: #f1f1f1;
 }
 
-.portfolio-table tr:nth-child(even) {
+.portfolio-table tr:nth-child(even),
+.table-summary tr:nth-child(even) {
   background-color: #fff;
 }
 
 .portfolio-table td,
-.portfolio-table th {
-  padding: 9px 9px;
+.portfolio-table th,
+.table-summary td,
+.table-summary th {
+  padding: 7px 7px;
   display: table-cell;
   border: 1px solid #ddd;
   text-align: center;
@@ -36,7 +42,8 @@
   min-width: 18%;
 }
 
-.portfolio-table th {
+.portfolio-table th,
+.table-summary th {
   color: #32302f;
   background-color: #fff;
 }
