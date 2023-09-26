@@ -1,23 +1,23 @@
 html,
 body,
 #root,
-.App {
+.Dashboard {
   height: 100%;
 }
 
-.app {
+.dashboard {
   height: 100%;
   padding: 12px;
   place-items: center;
   background-color: #f1f1f1;
 }
 
-.app-body {
+.dashboard-body {
   background-color: #fff;
   box-shadow: -1px 4px 20px -8px rgba(0, 0, 0, 0.65);
   border-radius: 15px;
 }
 
-.app-inner {
+.dashboard-inner {
   padding: 20px;
 }
