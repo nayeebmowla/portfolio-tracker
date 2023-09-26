@@ -8,7 +8,7 @@ import MenuIcon from "@mui/icons-material/Menu";
 import { Link, useLocation } from "react-router-dom";
 import { useTheme } from "@mui/material/styles";
 
-function NavBar() {
+function NavBar({ setToken }) {
   const theme = useTheme();
   const path = useLocation().pathname.split("/");
   const page = path.at(-1);
@@ -85,7 +85,7 @@ function NavBar() {
           </Typography>
         </Stack>
 
-        <Button component={Link} to={"/login"}>
+        <Button onClick={() => setToken()} component={Link} to={"/login"}>
           Logout
         </Button>
       </Toolbar>

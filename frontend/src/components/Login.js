@@ -7,12 +7,26 @@ import {
   Toolbar,
   Typography,
 } from "@mui/material";
-import React from "react";
-import { Link } from "react-router-dom";
+import React, { useEffect } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import { useTheme } from "@mui/material/styles";
+import queryString from "query-string";
 
-function Login() {
+function Login({ setToken }) {
+  const navigate = useNavigate();
+  const authorizationUrl = `https://login.questrade.com/oauth2/authorize?client_id=${process.env.REACT_APP_CLIENT_ID}&response_type=code&redirect_uri=${process.env.REACT_APP_CALLBACK_URI}`;
   const theme = useTheme();
+
+  useEffect(() => {
+    const { code } = queryString.parse(window.location.search);
+    if (code) {
+      // TODO
+      const token = "12345";
+      setToken(token);
+      navigate("/dashboard/dividends", { replace: true });
+    }
+  });
+
   return (
     <>
       <AppBar color="secondary" position="static">
@@ -53,7 +67,7 @@ function Login() {
               size="large"
               variant="contained"
               component={Link}
-              to={"/dashboard/dividends"}
+              to={authorizationUrl}
               sx={{
                 marginBottom: "15px",
               }}

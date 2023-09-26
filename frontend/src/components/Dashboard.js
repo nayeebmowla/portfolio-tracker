@@ -3,11 +3,11 @@ import * as React from "react";
 import NavBar from "./NavBar";
 import { Outlet } from "react-router-dom";
 
-function Dashboard() {
+function Dashboard({ setToken }) {
   return (
     <>
       <nav>
-        <NavBar />
+        <NavBar setToken={setToken} />
       </nav>
       <div className="dashboard">
         <div className="dashboard-body">

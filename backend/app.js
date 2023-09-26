@@ -21,16 +21,9 @@ app.use(cors());
 app.use(express.json());
 
 // ROUTES
-// Redirect route to Questrade authorization URL
-app.get("/api/auth", (req, res) => {
-  const authorizationUrl = `https://login.questrade.com/oauth2/authorize?client_id=${process.env.CLIENT_ID}&response_type=code&redirect_uri=${redirect_uri}`;
-  res.redirect(authorizationUrl);
-});
-
-// Callback route to handle Questrade authorization response
-app.get("/api/auth/callback", async (req, res) => {
-  // Extract authorization code from the query parameter
-  const authorizationCode = req.query.code;
+// Route to exchange authorization code for an access token
+app.post("/api/auth/", async (req, res) => {
+  const { code: authorizationCode } = req.body;
   if (!authorizationCode) {
     return res.status(400).send("Authorization code must be provided.");
   }
@@ -45,7 +38,7 @@ app.get("/api/auth/callback", async (req, res) => {
   }
 });
 
-// Route to refresh token
+// Route to fetch refresh token
 app.post("/api/refresh-token", async (req, res) => {
   const { refresh_token: refreshToken } = req.body;
   if (!refreshToken) {
