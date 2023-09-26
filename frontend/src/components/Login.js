@@ -1,4 +1,4 @@
-import "./Login.css";
+import "./Base.css";
 import {
   AppBar,
   Button,
@@ -28,7 +28,7 @@ function Login() {
         </Toolbar>
       </AppBar>
       <div className="background">
-        <div className="login-container">
+        <div className="container">
           <Paper
             elevation={3}
             sx={{
