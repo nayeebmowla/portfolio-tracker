@@ -1,5 +1,6 @@
 const express = require("express");
 const axios = require("axios");
+const cors = require("cors");
 const { fetchPositions } = require("./utils/questrade");
 require("dotenv").config();
 
@@ -16,6 +17,7 @@ const app = express();
 const port = process.env.PORT || 3005;
 const redirect_uri = `https://www.nayeeb-portfolio-tracker.com:${port}/api/auth/callback/`;
 
+app.use(cors());
 app.use(express.json());
 
 // ROUTES
@@ -46,6 +48,9 @@ app.get("/api/auth/callback", async (req, res) => {
 // Route to refresh token
 app.post("/api/refresh-token", async (req, res) => {
   const { refresh_token: refreshToken } = req.body;
+  if (!refreshToken) {
+    return res.status(400).send("Refresh token must be provided.");
+  }
 
   try {
     // Get a new access token
