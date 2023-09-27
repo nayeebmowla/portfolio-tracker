@@ -14,23 +14,25 @@ const options = {
 };
 
 const app = express();
-const port = process.env.PORT || 3005;
-const redirect_uri = `https://www.nayeeb-portfolio-tracker.com:${port}/api/auth/callback/`;
+const port = process.env.PORT || 5000;
 
 app.use(cors());
 app.use(express.json());
 
 // ROUTES
 // Route to exchange authorization code for an access token
-app.post("/api/auth/", async (req, res) => {
-  const { code: authorizationCode } = req.body;
+app.post("/api/auth", async (req, res) => {
+  const { code: authorizationCode, redirect_uri: redirectUri } = req.body;
   if (!authorizationCode) {
     return res.status(400).send("Authorization code must be provided.");
+  }
+  if (!redirectUri) {
+    return res.status(400).send("Redirect URI must be provided.");
   }
 
   try {
     const response = await axios.post(
-      `https://login.questrade.com/oauth2/token?client_id=${process.env.CLIENT_ID}&code=${authorizationCode}&grant_type=authorization_code&redirect_uri=${redirect_uri}`
+      `https://login.questrade.com/oauth2/token?client_id=${process.env.CLIENT_ID}&code=${authorizationCode}&grant_type=authorization_code&redirect_uri=${redirectUri}`
     );
     res.send(response.data);
   } catch (error) {

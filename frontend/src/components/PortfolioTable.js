@@ -99,8 +99,11 @@ export default function PortfolioTable({ account, positions, conversionRate }) {
   const theme = useTheme();
   const [sorting, setSorting] = React.useState([]);
 
-  positions = calculateMetrics(account, positions, conversionRate);
-  const summary = calculateSummary(positions);
+  const data = React.useMemo(
+    () => calculateMetrics(account, positions, conversionRate),
+    [account, positions, conversionRate]
+  );
+  const summary = calculateSummary(data);
 
   /** @type import('@tanstack/react-table').ColumnDef<any>*/
   const columns = React.useMemo(
@@ -212,7 +215,7 @@ export default function PortfolioTable({ account, positions, conversionRate }) {
   );
 
   const table = useReactTable({
-    data: positions,
+    data,
     columns,
     state: {
       sorting,

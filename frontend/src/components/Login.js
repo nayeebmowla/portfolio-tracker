@@ -11,6 +11,7 @@ import React, { useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useTheme } from "@mui/material/styles";
 import queryString from "query-string";
+import axios from "axios";
 
 function Login({ setToken }) {
   const navigate = useNavigate();
@@ -20,12 +21,25 @@ function Login({ setToken }) {
   useEffect(() => {
     const { code } = queryString.parse(window.location.search);
     if (code) {
-      // TODO
-      const token = "12345";
-      setToken(token);
-      navigate("/dashboard/dividends", { replace: true });
+      const fetchToken = async () => {
+        try {
+          const result = await axios.post(
+            `${process.env.REACT_APP_SERVER}/api/auth`,
+            {
+              code,
+              redirect_uri: process.env.REACT_APP_CALLBACK_URI,
+            }
+          );
+          setToken(result.data);
+          navigate("/dashboard/dividends", { replace: true });
+        } catch (error) {
+          console.log(error);
+        }
+      };
+
+      fetchToken();
     }
-  });
+  }, []);
 
   return (
     <>
