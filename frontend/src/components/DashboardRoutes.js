@@ -5,7 +5,7 @@ import Summary from "./Summary";
 import NotFound from "./NotFound";
 import Dashboard from "./Dashboard";
 
-function DashboardRoutes({ data, setToken }) {
+function DashboardRoutes({ data, setToken, fetchData }) {
   const accounts = data.map((item) => item.account);
   const primaryAccount = accounts.find((account) => account.isPrimary === true);
   const [account, setAccount] = React.useState(primaryAccount.type);
@@ -25,6 +25,7 @@ function DashboardRoutes({ data, setToken }) {
                 setAccount(event.target.value);
               }}
               data={positions}
+              fetchData={fetchData}
             />
           }
         />

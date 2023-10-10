@@ -6,7 +6,7 @@ import RefreshButton from "./RefreshButton";
 import { useTheme } from "@mui/material/styles";
 import TableSummary from "./TableSummary";
 
-function Dividends({ account, onAccountSelect, accounts, data }) {
+function Dividends({ account, onAccountSelect, accounts, data, fetchData }) {
   const theme = useTheme();
 
   const cadPositions = data.positions.filter(
@@ -20,7 +20,7 @@ function Dividends({ account, onAccountSelect, accounts, data }) {
     <div className="dividends-container">
       <Stack spacing={2}>
         <Stack alignItems="center" direction="row" spacing={2}>
-          <RefreshButton />
+          <RefreshButton onClick={fetchData} />
           <PortfolioSelect
             accounts={accounts}
             account={account}

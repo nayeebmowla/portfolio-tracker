@@ -8,8 +8,10 @@ import useToken from "./hooks/useToken";
 function App() {
   const { token, setToken } = useToken();
   const [data, setData] = React.useState([]);
+  const [loading, setLoading] = React.useState(true);
 
   const fetchData = React.useCallback(async (token) => {
+    setLoading(true);
     const result = await axios.post(
       `${process.env.REACT_APP_SERVER}/api/positions`,
       {
@@ -18,6 +20,7 @@ function App() {
         token_type: token.token_type,
       }
     );
+    setLoading(false);
     setData(result.data);
   }, []);
 
@@ -31,7 +34,7 @@ function App() {
     return <Login setToken={setToken} />;
   }
 
-  if (data.length === 0) {
+  if (loading) {
     return (
       <Box
         sx={{
@@ -46,7 +49,13 @@ function App() {
     );
   }
 
-  return <DashboardRoutes data={data} setToken={setToken} />;
+  return (
+    <DashboardRoutes
+      data={data}
+      setToken={setToken}
+      fetchData={() => fetchData(token)}
+    />
+  );
 }
 
 export default App;
