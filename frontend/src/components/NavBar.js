@@ -85,7 +85,7 @@ function NavBar({ setToken }) {
           </Typography>
         </Stack>
 
-        <Button onClick={() => setToken()} component={Link} to={"/login"}>
+        <Button onClick={() => setToken()} component={Link} to={"/"}>
           Logout
         </Button>
       </Toolbar>

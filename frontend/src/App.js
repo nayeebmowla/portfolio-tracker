@@ -1,57 +1,52 @@
-import data from "./mock-data.json";
 import * as React from "react";
-import { Route, Routes } from "react-router-dom";
-import Dashboard from "./components/Dashboard";
 import Login from "./components/Login";
-import NotFound from "./components/NotFound";
-import Summary from "./components/Summary";
-import Dividends from "./components/Dividends";
+import axios from "axios";
+import DashboardRoutes from "./components/DashboardRoutes";
+import { Box, CircularProgress } from "@mui/material";
+import useToken from "./hooks/useToken";
 
 function App() {
-  const [token, setToken] = React.useState();
-  const accounts = data.map((item) => item.account);
-  const primaryAccount = accounts.find((account) => account.isPrimary === true);
-  const [account, setAccount] = React.useState(primaryAccount.type);
-  const positions = data.find((item) => item.account.type === account);
+  const { token, setToken } = useToken();
+  const [data, setData] = React.useState([]);
+
+  const fetchData = React.useCallback(async (token) => {
+    const result = await axios.post(
+      `${process.env.REACT_APP_SERVER}/api/positions`,
+      {
+        access_token: token.access_token,
+        api_server: token.api_server,
+        token_type: token.token_type,
+      }
+    );
+    setData(result.data);
+  }, []);
+
+  React.useEffect(() => {
+    if (token) {
+      fetchData(token);
+    }
+  }, [token]);
 
   if (!token) {
     return <Login setToken={setToken} />;
   }
 
-  return (
-    <Routes>
-      <Route path="*" element={<NotFound />} />
-      <Route index element={<Login setToken={setToken} />} />
-      <Route path="login" element={<Login setToken={setToken} />} />
-      <Route path="dashboard" element={<Dashboard setToken={setToken} />}>
-        <Route
-          path="dividends"
-          element={
-            <Dividends
-              account={account}
-              accounts={accounts}
-              onAccountSelect={(event) => {
-                setAccount(event.target.value);
-              }}
-              data={positions}
-            />
-          }
-        />
-        <Route
-          path="summary"
-          element={
-            <Summary
-              account={account}
-              accounts={accounts}
-              onAccountSelect={(event) => {
-                setAccount(event.target.value);
-              }}
-            />
-          }
-        />
-      </Route>
-    </Routes>
-  );
+  if (data.length === 0) {
+    return (
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          height: "100%",
+        }}
+      >
+        <CircularProgress size={75} />
+      </Box>
+    );
+  }
+
+  return <DashboardRoutes data={data} setToken={setToken} />;
 }
 
 export default App;

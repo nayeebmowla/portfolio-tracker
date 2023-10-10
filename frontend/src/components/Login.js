@@ -22,19 +22,15 @@ function Login({ setToken }) {
     const { code } = queryString.parse(window.location.search);
     if (code) {
       const fetchToken = async () => {
-        try {
-          const result = await axios.post(
-            `${process.env.REACT_APP_SERVER}/api/auth`,
-            {
-              code,
-              redirect_uri: process.env.REACT_APP_CALLBACK_URI,
-            }
-          );
-          setToken(result.data);
-          navigate("/dashboard/dividends", { replace: true });
-        } catch (error) {
-          console.log(error);
-        }
+        const result = await axios.post(
+          `${process.env.REACT_APP_SERVER}/api/auth`,
+          {
+            code,
+            redirect_uri: process.env.REACT_APP_CALLBACK_URI,
+          }
+        );
+        setToken(result.data);
+        navigate("/dashboard/dividends", { replace: true });
       };
 
       fetchToken();

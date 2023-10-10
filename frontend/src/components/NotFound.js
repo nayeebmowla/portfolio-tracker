@@ -21,7 +21,7 @@ function NotFound() {
       <div className="background">
         <div className="container">
           <Paper
-            elevation={-1}
+            elevation={0}
             sx={{
               textAlign: "center",
               p: 2,
