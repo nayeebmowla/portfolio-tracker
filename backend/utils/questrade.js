@@ -22,6 +22,7 @@ async function fetchAccounts(accessToken, apiServer, tokenType) {
 async function fetchPositions(accessToken, apiServer, tokenType) {
   const accounts = await fetchAccounts(accessToken, apiServer, tokenType);
   const accountsWithPositions = [];
+
   for (const account of accounts) {
     const positionData = await fetchData(
       accessToken,
@@ -45,7 +46,17 @@ async function fetchPositions(accessToken, apiServer, tokenType) {
 }
 
 async function fetchData(accessToken, apiServer, tokenType, endpoint) {
-  const response = await axios.get(`${apiServer}v1/${endpoint}`, {
+  if (
+    !apiServer.startsWith("https://api") ||
+    !apiServer.endsWith(".iq.questrade.com/") ||
+    endpoint.includes("..")
+  ) {
+    throw new Error("Invalid API server hostname.");
+  }
+
+  const apiUrl = `${apiServer}v1/${endpoint}`;
+
+  const response = await axios.get(apiUrl, {
     headers: {
       Authorization: `${tokenType} ${accessToken}`,
     },

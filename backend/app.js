@@ -70,7 +70,14 @@ app.post("/api/positions", async (req, res) => {
   } = req.body;
 
   if (!accessToken || !apiServer || !tokenType) {
-    res.status(401).send("Please authenticate.");
+    return res.status(401).send("Please authenticate.");
+  }
+
+  if (
+    !apiServer.startsWith("https://api") ||
+    !apiServer.endsWith(".iq.questrade.com/")
+  ) {
+    return res.status(400).send("Invalid API server hostname.");
   }
 
   try {
